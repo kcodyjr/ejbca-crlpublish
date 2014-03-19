@@ -1,0 +1,12 @@
+ejbca-crlpublish
+================
+
+Implements a CRL publisher compatible with EJBCA PKI.
+
+Supplies a /usr/bin/crlpublish invocation script for the purpose,
+and is config-file compatible with the earlier crlpublisher.sh script.
+
+Multiple targets are supported by using a comma separated list.
+
+A new configuration format is also supported, docs TBD.
+

@@ -1,0 +1,14 @@
+Makefile.PL
+crlpublish
+CrlPublish.pm
+CrlPublish/Config.pm
+CrlPublish/CrlInfo.pm
+CrlPublish/Method.pm
+CrlPublish/Method/scp.pm
+CrlPublish/Run.pm
+CrlPublish/Target.pm
+MANIFEST
+AUTHORS
+README
+COPYING
+GPL-3
