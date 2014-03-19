@@ -4,7 +4,7 @@ use strict;
 #
 # crlpublish
 #
-# Copyright (C) 2014, Kevin Cody-Little <kcodyjr@gmail.com>
+# Copyright (C) 2014, Kevin Cody-Little <kcody@cpan.org>
 #
 # Portions derived from crlpublisher.sh, original copyright follows:
 #
@@ -24,9 +24,37 @@ use strict;
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-# Constructor
+
+=head1 NAME
+
+EJBCA::CrlPublish::CrlInfo
+
+=head1 SYNOPSIS
+
+Retrives details from a CRL file and presents them as accessor methods.
+
+Calls the openssl binary and parses the output to get its job done.
+
+=cut
+
+
+###############################################################################
+# Library Dependencies
 
 our $VERSION = 0.3;
+
+
+###############################################################################
+
+=head1 CONSTRUCTOR
+
+=head2 EJBCA::CrlPublish::CrlInfo->new( $crlFile )
+
+Argument must be a path to a plain, readable CRL file in DER or PEM format.
+
+Returns a blessed, populated object reference, or undef on failure.
+
+=cut
 
 sub new {
 	my ( $class, $crlFile ) = @_;
@@ -142,7 +170,14 @@ sub importIssuingUrl {
 
 
 ###############################################################################
-# Accessor Methods
+
+=head1 ACCESSOR METHODS
+
+=head2 $self->crlFile
+
+Returns the CRL filename supplied to the constructor.
+
+=cut
 
 sub crlFile {
 	my ( $self, $crlFile ) = @_;
@@ -154,6 +189,12 @@ sub crlFile {
 	return $self->{crlFile};
 }
 
+=head2 $self->crlFormat
+
+Returns 'PEM' or 'DER'.
+
+=cut
+
 sub crlFormat {
 	my ( $self, $crlFormat ) = @_;
 
@@ -163,6 +204,12 @@ sub crlFormat {
 
 	return $self->{crlFormat};
 }
+
+=head2 $self->issuerDn
+
+Returns the CRL issuer distinguished name.
+
+=cut
 
 sub issuerDn {
 	my ( $self, $issuerDn ) = @_;
@@ -174,6 +221,12 @@ sub issuerDn {
 	return $self->{issuerDn};
 }
 
+=head2 $self->issuingFile
+
+Returns the file portion of the issuing distribution point URL.
+
+=cut
+
 sub issuingFile {
 	my ( $self, $issuingFile ) = @_;
 
@@ -183,6 +236,12 @@ sub issuingFile {
 
 	return $self->{issuingFile};
 }
+
+=head2 $self->issuingPath
+
+Returns the path portion of the issuing distribution point URL.
+
+=cut
 
 sub issuingPath {
 	my ( $self, $issuingPath ) = @_;
@@ -194,6 +253,12 @@ sub issuingPath {
 	return $self->{issuingPath};
 }
 
+=head2 $self->issuingHost
+
+Returns the host portion of the issuing distribution point URL.
+
+=cut
+
 sub issuingHost {
 	my ( $self, $issuingHost ) = @_;
 
@@ -204,6 +269,12 @@ sub issuingHost {
 	return $self->{issuingHost};
 }
 
+=head2 $self->issuingUrl
+
+Returns the entire issuing distribution point URL.
+
+=cut
+
 sub issuingUrl {
 	my ( $self, $issuingUrl ) = @_;
 
@@ -213,6 +284,15 @@ sub issuingUrl {
 
 	return $self->{issuingUrl};
 }
+
+
+###############################################################################
+
+=head1 AUTHOR
+
+Kevin Cody-Little <kcody@cpan.org>
+
+=cut
 
 
 ###############################################################################

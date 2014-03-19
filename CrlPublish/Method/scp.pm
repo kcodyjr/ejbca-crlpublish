@@ -25,10 +25,31 @@ use strict;
 #
 ###############################################################################
 
+=head1 NAME
+
+EJBCA::CrlPublish::Method::scp
+
+=head1 SYNOPSIS
+
+Implements publishing via scp.
+
+=cut
+
+#TODO
+#Updates are atomic; that is, CRLs are transferred to a temporary file and
+#then renamed into place, so there is no period of time that no valid CRL
+#can be retrieved from the server.
+
+###############################################################################
+# Library Dependencies
+
 use base 'EJBCA::CrlPublish::Method';
 
 our $VERSION = 0.3;
 
+
+###############################################################################
+# Implementation
 
 sub validate {
 	my $self = shift;
@@ -74,6 +95,15 @@ sub publish {
 
 	return 1;
 }
+
+
+###############################################################################
+
+=head1 AUTHOR
+
+Kevin Cody-Little <kcody@cpan.org>
+
+=cut
 
 
 ###############################################################################

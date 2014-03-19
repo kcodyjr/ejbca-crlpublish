@@ -4,7 +4,7 @@ use strict;
 #
 # crlpublish
 #
-# Copyright (C) 2014, Kevin Cody-Little <kcodyjr@gmail.com>
+# Copyright (C) 2014, Kevin Cody-Little <kcody@cpan.org>
 #
 # Portions derived from crlpublisher.sh, original copyright follows:
 #
@@ -24,6 +24,21 @@ use strict;
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+
+=head1 NAME
+
+EJBCA::CrlPublish::Target
+
+=head1 SYNOPSIS
+
+A flexible attribute container class, used for collecting the right
+configuration values for a given certificate revocation list, and given to
+the EJBCA::CrlPublish::Method class as its sole argument.
+
+=cut
+
+
+###############################################################################
 # Library dependencies.
 
 use Carp;
@@ -32,7 +47,20 @@ our $VERSION = 0.3;
 
 
 ###############################################################################
-# Instantiator for a single empty Target object.
+
+=head1 CONSTRUCTOR
+
+=head2 EJBCA::CrlPublish::Target->new( %attributes );
+
+Creates a new empty object. Any arguments supplied as a hash will be applied
+to the object before returning. These arguments will not behave any differently
+than those supplied as attribute method calls, see below.
+
+Note: you probably want the find constructor, see below.
+
+Returns a blessed EJBCA::CrlPublish::Target reference.
+
+=cut
 
 sub new {
 	my ( $class, %args ) = @_;
@@ -52,6 +80,10 @@ sub new {
 	return $self;
 }
 
+
+###############################################################################
+# Copy Constructor
+
 sub copyObject {
 	my $self = shift;
 
@@ -62,7 +94,18 @@ sub copyObject {
 
 
 ###############################################################################
-# Wrapper for configuration resolver. Returns a list of Target objects.
+
+=head1 SEARCH CONSTRUCTOR
+
+=head2 EJBCA::CrlPublish::Target->find( $crlInfo );
+
+Given an EJBCA::CrlPublish::CrlInfo argument, returns a list of Target objects
+representing each publishing target, with each containing all known relevant
+configuration attributes.
+
+Returns a list of blessed, populated EJBCA::CrlPublish::Target references.
+
+=cut
 
 sub find {
 	my ( $class, $crlInfo ) = @_;
@@ -105,7 +148,14 @@ sub find {
 
 
 ###############################################################################
-# Fixed attribute mutator methods
+
+=head1 FIXED ATTRIBUTES
+
+=head2 $self->crlFile
+
+An alias for $self->crlInfo->crlFile
+
+=cut
 
 sub crlFile {
 	my $self = shift;
@@ -115,7 +165,21 @@ sub crlFile {
 
 
 ###############################################################################
-# Automagic attribute mutator method generator
+
+=head1 OTHER ATTRIBUTES
+
+=head2 $self->attrib( "attributeName" );
+
+=head2 $self->attrib( "attributeName", "value" );
+
+A generic attribute accessor/mutator.
+
+This should not be called directly; it is used by AUTOLOAD to create closures.
+
+Just call $self->attributeName and $self->attributeName( "value" ) and this
+module will take care of the rest.
+
+=cut
 
 sub attrib {
 	my ( $self, $name, $value ) = @_;
@@ -126,6 +190,10 @@ sub attrib {
 
 	return $self->{$name};
 }
+
+
+###############################################################################
+# Automagic attribute mutator method generator
 
 our $AUTOLOAD;
 
@@ -156,6 +224,15 @@ sub AUTOLOAD {
 
 	return &$func( $this, @_ );
 }
+
+
+###############################################################################
+
+=head1 AUTHOR
+
+Kevin Cody-Little <kcody@cpan.org>
+
+=cut
 
 
 ###############################################################################

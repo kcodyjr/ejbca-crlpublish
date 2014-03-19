@@ -4,7 +4,7 @@ use strict;
 #
 # crlpublish
 #
-# Copyright (C) 2014, Kevin Cody-Little <kcodyjr@gmail.com>
+# Copyright (C) 2014, Kevin Cody-Little <kcody@cpan.org>
 #
 # Portions derived from crlpublisher.sh, original copyright follows:
 #
@@ -24,6 +24,21 @@ use strict;
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+
+=head1 NAME
+
+EJBCA::CrlPublish::Method
+
+=head1 SYNOPSIS
+
+Base class for flexible publishing methods.
+
+This is invoked by EJBCA::CrlPublish to actually transfer a CRL.
+
+=cut
+
+
+###############################################################################
 # Library dependencies
 
 use Carp;
@@ -32,7 +47,16 @@ our $VERSION = 0.3;
 
 
 ###############################################################################
-# Call the publisher on a target.. Only this should be called outside here.
+
+=head1 INVOCATION
+
+=head2 EJBCA::CrlPublish::Method->execute( $target )
+
+Argument must be a single EJBCA::CrlPublish::Target object.
+
+This is the only function that should be called directly, except by subclasses.
+
+=cut
 
 sub execute {
 	my ( $class, $target ) = @_;
@@ -67,15 +91,26 @@ sub execute {
 
 
 ###############################################################################
-# Return the target object that was passed to execute().
+
+=head1 HELPER METHODS
+
+These are used by subclasses that implement specific publishing methods.
+
+=head2 $self->target
+
+Returns the EJBCA::CrlPublish::Target object that was passed to execute, above.
+
+=cut
 
 sub target {
 	return (shift)->{target};
 }
 
+=head2 $self->argMustExist( @argNames )
 
-###############################################################################
-# Helper functions for publishMethod implementations.
+Croaks if the target object is missing any of the supplied attribute names.
+
+=cut
 
 sub argMustExist {
 	my $self = shift;
@@ -87,6 +122,14 @@ sub argMustExist {
 
 	return 1;
 }
+
+=head2 $self->checkFileType( $name, $path )
+
+First argument is used to prefix error messages, second is a path to a file.
+
+Croaks if the file isn't present, plain, and readable.
+
+=cut
 
 sub checkFileType {
 	my ( $self, $name, $path ) = @_;
@@ -105,7 +148,16 @@ sub checkFileType {
 
 
 ###############################################################################
-# Abstract class definitions. publishMethod subclasses must override these.
+
+=head1 ABSTRACT METHODS
+
+Subclasses implementing specific publishing methods must provide these.
+
+=head2 $self->validate
+
+Croaks if it doesn't like something about the supplied Target object.
+
+=cut
 
 sub validate {
 	my $self = shift;
@@ -114,12 +166,27 @@ sub validate {
 
 }
 
+=head2 $self->publish
+
+Accomplish the publish. Called only if $self->validate succeeds.
+
+=cut
+
 sub publish {
 	my $self = shift;
 
 	confess "Abstract method invocation";
 
 }
+
+
+###############################################################################
+
+=head1 AUTHOR
+
+Kevin Cody-Little <kcody@cpan.org>
+
+=cut
 
 
 ###############################################################################

@@ -4,7 +4,7 @@ use strict;
 #
 # crlpublish
 #
-# Copyright (C) 2014, Kevin Cody-Little <kcodyjr@gmail.com>
+# Copyright (C) 2014, Kevin Cody-Little <kcody@cpan.org>
 #
 # Portions derived from crlpublisher.sh, original copyright follows:
 #
@@ -24,6 +24,21 @@ use strict;
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+
+=head1 NAME
+
+EJBCA::CrlPublish
+
+=head1 SYNOPSIS
+
+High level API for publishing new CRLs.
+
+Exports: &publishCrl &processQueue
+
+=cut
+
+
+###############################################################################
 # Global Configuration
 
 my $globalOldConfigDir = '/etc/crlpublisher';
@@ -42,6 +57,9 @@ use EJBCA::CrlPublish::Target;
 
 our $VERSION = '0.3';
 
+use base 'Exporter';
+our @EXPORT = qw( publishCrl processQueue );
+
 
 ###############################################################################
 # Configuration Loader
@@ -59,29 +77,67 @@ sub loadConfiguration() {
 ###############################################################################
 # CRL Handler
 
-sub processCrl($) {
+sub _publishOneCrl($) {
 	my $crlFile = shift;
-
-	loadConfiguration();
 
 	my $crlInfo = EJBCA::CrlPublish::CrlInfo->new( $crlFile );
 
 	my @targets = EJBCA::CrlPublish::Target->find( $crlInfo );
 
-	my $rc;
-	my $rv = 0;
+	my $rc = 1;
 	foreach my $target ( @targets ) {
 		# TODO: implement asynchronous queueing
-		$rc = EJBCA::CrlPublish::Method->execute( $target );
-		$rv = 1 unless $rc;
+		$rc &&= EJBCA::CrlPublish::Method->execute( $target );
 	}
 
-	exit $rv;
+	return $rc;
+}
+
+=head1 CRL PUBLISHING FUNCTION
+
+=head2 publishCrl( $crlFile );
+
+=head2 publishCrl( @crlFiles );
+
+Publishes the given CRL file, which must be a readable plain file, and
+must be a valid certificate revocation list in PEM or DER format.
+
+Supplying a list of crlFile names is supported, but only recommended when
+asynchronous publishing is in use. Otherwise, the caller will not be able to
+tell which CRL might have failed, and will have to republish them all.
+
+Returns true if all supplied crlFiles were published or queued successfully,
+and returns false if any single crlFile failed to publish or enqueue.
+
+=cut
+
+sub publishCrl(@) {
+
+	loadConfiguration();
+
+	my $rc = 1;
+	while ( my $crlFile = shift ) {
+		$rc &&= _publishOneCrl( $crlFile );
+	}
+
+	return $rc;
 }
 
 
 ###############################################################################
 # Cron Despooler
+
+=head1 QUEUE FLUSH FUNCTION
+
+=head2 processQueue();
+
+Examines the local spool directory and attempts to push any pending CRL
+updates to their destinations. Upon failure, the CRL will remain in the queue
+for another attempt.
+
+By default, the queue directory is in /var/spool/crlpublish.
+
+=cut
 
 sub processQueue() {
 
@@ -92,7 +148,17 @@ sub processQueue() {
 
 	# look through spooldirectory; push then remove
 
+	return 0;
 }
+
+
+###############################################################################
+
+=head1 AUTHOR
+
+Kevin Cody-Little <kcody@cpan.org>
+
+=cut
 
 
 ###############################################################################

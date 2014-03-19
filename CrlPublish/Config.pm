@@ -4,7 +4,7 @@ use strict;
 #
 # crlpublish
 #
-# Copyright (C) 2014, Kevin Cody-Little <kcodyjr@gmail.com>
+# Copyright (C) 2014, Kevin Cody-Little <kcody@cpan.org>
 #
 # Portions derived from crlpublisher.sh, original copyright follows:
 #
@@ -25,11 +25,43 @@ use strict;
 #
 ###############################################################################
 
+=head1 NAME
+
+EJBCA::CrlPublish::Config
+
+=head1 SYNOPSIS
+
+Loads and queries the contents of configuration files.
+
+All functions should be called as class methods.
+
+=cut
+
+
+###############################################################################
+# Library Dependencies
+
 our $VERSION = 0.3;
+
+
+###############################################################################
+# Config Value Storage and Retrieval
+
+=head1 CONFIG VALUE METHODS
+
+=cut
 
 { # private lexicals begin
 
 my %CONFIG = ();
+
+=head2 $class->configValue( $section, $name )
+
+=head2 $class->configValue( $section, $name, $value )
+
+Sets or retrieves a single value in a specific section.
+
+=cut
 
 sub configValue {
 	my ( $class, $section, $name, $value ) = @_;
@@ -42,6 +74,13 @@ sub configValue {
 
 	return $ref->{$name};
 }
+
+=head2 $class->applySection( $section, $target )
+
+Applies each attribute in the given section to the given target, by calling
+$target->attributeName( attributeValue ).
+
+=cut
 
 sub applySection {
 	my ( $class, $section, $target ) = @_;
@@ -60,7 +99,15 @@ sub applySection {
 
 
 ###############################################################################
-# Data Import Methods
+
+=head1 DATA IMPORT METHOD
+
+=head2 $class->importAllFiles( $directory )
+
+Reads all of the config files in the given directory and stores their
+contents using the configValue method described above.
+
+=cut
 
 sub importAllFiles {
 	my ( $class, $path ) = @_;
@@ -194,6 +241,15 @@ sub parseFile {
 
 	return \%rv;
 }
+
+
+###############################################################################
+
+=head1 AUTHOR
+
+Kevin Cody-Little <kcody@cpan.org>
+
+=cut
 
 
 ###############################################################################
