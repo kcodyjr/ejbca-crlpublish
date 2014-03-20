@@ -193,6 +193,114 @@ Equivalent to publishMethod.
 Combines remotePath and remoteFile into a single directive. Parsed
 at config-read time and stored internally as remotePath and remoteFile.
 
+=head1 SOFTWARE REQUIREMENTS
+
+crlpublish requires a CA that publishes CRLs by calling a script, such
+as EJBCA. Also, you will need a reasonably recent copy of Perl.
+
+The scp publishing method requires ssh and scp to be installed on the
+local (CA) and remote (CRL distributing) hosts.
+
+=head1 INSTALLING CRLPUBLISH
+
+The easiest way is to run the 'cpan' tool and type:
+
+ install EJBCA::CrlPublish
+
+=head1 INSTALLATION TASKS WITH EJBCA
+
+This list presumes you have already set up your PKI, and that you have
+configured the correct CRL Issuing Distribution Point URL into the CRL
+via its CA certificate, and that you have installed crlpublish.
+
+=over
+
+=item 1.
+
+Set up user accounts.
+
+If your goal is to make life as easy as possible, create an account on the
+target server(s) with the same username as the CA runs under.
+
+Create an SSH key on the CA host, and install its public key on the target.
+
+=item 2.
+
+Set up publishing directory on target server(s).
+
+This is really web server administration, mostly. Create the directory, and
+make sure the user you created above can write to it.
+
+Create a symlink, or directory tree ending in a symlink, in the target user's
+home directory, matching the path (but not file) portion of the issuing URL.
+The goal is that if, with CWD equal to the home directory, you were to write
+to a filename like "path/to/rootca.crl", it would land in that directory.
+
+=item 3.
+
+Configure crlpublish.
+
+If you've followed these steps, you don't need any configuration, unless you
+have high-availability CRL distribution servers. If so, create the following
+file in the home directory of the CA server instance:
+
+$HOME/.crlpublish/targets.cfg
+
+with the following contents:
+
+ [targetNameFromUrl.example.com]
+ remoteHost=realtarget1.example.com,realtarget2.example.com
+
+Make sure this file is readable by the CA server process.
+
+=item 4.
+
+Set up the CRL Publisher in the EJBCA Administration Pages.
+
+=over
+
+=item a.
+
+Create a new publisher, perhaps named "CRL Publisher".
+
+=item b.
+
+Edit the newly created publisher.
+
+=item c.
+
+Change the type to "Custom Publisher".
+
+=item d.
+
+Add the following to the Properties box:
+
+ crl.application /usr/bin/crlpublish
+ crl.failOnStandardError false
+ crl.failOnErrorCode true
+
+=item e.
+
+Make sure the "Use queue for certificates" box is unchecked.
+
+=item f.
+
+Make sure the "Use queue for CRLs" box is checked.
+
+=item g.
+
+Click "Save".
+
+=back
+
+=item 5.
+
+Activate the publisher in each CA and each Certificate Profile.
+
+This is left as an exercise for the user. Check http://ejbca.org.
+
+=back
+
 =head1 AUTHOR
 
 Kevin Cody-Little <kcody@cpan.org>
