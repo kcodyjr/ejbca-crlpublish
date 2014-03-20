@@ -126,63 +126,72 @@ publishMethod implementation to make meaning of them.
 
 =head1 ATTRIBUTE NAMES AND AND MEANINGS
 
-Additional publishMethods may require their own attributes.
+=head2 Core Attributes
 
-=head2 publishMethod
+=head3 publishMethod
 
 Specify the publishing method to use. Currently, only scp is supported.
 
-=head2 publisher
+=head2 Target Attributes
 
-Equivalent to publishMethod; kept for legacy compatibility.
-
-=head2 issuerDn
-
-Only meaningful in a legacy style config file; specifies the issuerDn
-to which that config file refers. The new config syntax specifies this
-in a section name.
-
-=head2 remoteUser
-
-Specify the remote username to connect as. If not specified, none will
-be specified on the command line, and scp will default to the current
-user on the originating host.
-
-=head2 remoteHost
-
-Specify the remote host to connect to. It can be a hostname, short or
-long, or an address, IPv4 or IPv6. It will be passed verbatim to scp.
-If not specified, it will be parsed from the CRL if available.
-
-Multiple targets are supported by supplying a comma-separated list.
-Whitespace around the commas is tolerated.
-
-=head2 remoteFile
+=head3 remoteFile
 
 Specify the filename to publish the CRL as, since crlpublish was probably
 invoked using a temporary file with a randomized name. If not specified,
 it will be parsed from the CRL if available.  If still not found, a
 runtime error will be generated.
 
-=head2 remotePath
+=head3 remoteHost
+
+Specify the remote host to connect to. It can be a hostname, short or
+long, or an address, IPv4 or IPv6. It will be passed verbatim to scp.
+If not specified, it will be parsed from the CRL if available. If still
+not found, a runtime error will be generated.
+
+Multiple targets are supported by supplying a comma-separated list.
+Whitespace around the commas is tolerated.
+
+=head3 remotePath
 
 Specify the subdirectory to place the remoteFile in. Relative paths are
 relative to the remoteUser's home directory on the remoteHost. It must
 exist. If not specified, it will be parsed from the CRL if available.
-If still not found, a runtime error will be generated.
+If still not found, a runtime error will be generated. Note that this
+value can legally be empty, indicating the remoteUser@remoteHost's home
+directory.
 
-=head2 remoteLocation
+=head2 Authentication Attributes
 
-Combines remotePath and remoteFile into a single directive. Kept for
-legacy compatibility; stored internally as remotePath and remoteFile.
-
-=head2 privateKeyFile
+=head3 privateKeyFile
 
 Filename of a private key compatible with the publishMethod in use.
 
-=head2 privateKey
+=head3 remoteUser
 
-Equivalent to privateKeyFile, kept for legacy compatibility.
+Specify the remote username to connect as. If not specified, none will
+be specified on the command line, and scp will default to the current
+user on the originating host.
+
+=head2 Legacy Compatibility Attributes
+
+=head3 issuerDn
+
+Only meaningful in a legacy style config file; specifies the issuerDn
+to which that config file refers. The new config syntax specifies this
+in a section name.
+
+=head3 privateKey
+
+Equivalent to privateKeyFile.
+
+=head3 publisher
+
+Equivalent to publishMethod.
+
+=head3 remoteLocation
+
+Combines remotePath and remoteFile into a single directive. Parsed
+at config-read time and stored internally as remotePath and remoteFile.
 
 =head1 AUTHOR
 
