@@ -57,7 +57,7 @@ To publish from within another program, use EJBCA::CrlPublish instead.
 
 use EJBCA::CrlPublish;
 
-our $VERSION = '0.4';
+our $VERSION = '0.4.1';
 
 
 ###############################################################################

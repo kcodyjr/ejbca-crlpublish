@@ -45,7 +45,7 @@ cannot be retrieved from the server.
 
 use base 'EJBCA::CrlPublish::Method';
 
-our $VERSION = 0.4;
+our $VERSION = '0.4.1';
 
 
 ###############################################################################
@@ -90,8 +90,6 @@ sub publish {
 	my $t_temp  = $t_file . '.new';
 
 	my $target = $t_host . ':' . $t_temp;
-
-	push @args, $source, $target;
 
 	system( 'scp', @args, $source, $target ) == 0
 		or die "Failed to scp: $?";
