@@ -43,7 +43,7 @@ the EJBCA::CrlPublish::Method class as its sole argument.
 
 use Carp;
 
-our $VERSION = 0.3;
+our $VERSION = 0.4;
 
 
 ###############################################################################
