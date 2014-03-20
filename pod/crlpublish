@@ -113,8 +113,8 @@ allowing attributes of the same name to overwrite earlier values.
 First, fixed defaults are applied. At present, this is only publishMethod=scp.
 Next, the parsed parts of the Issuing Distribution Point URL, if any, are
 copied in, followed by all values in the [defaults] section. Then, the values
-from the issuerDn section are copied the Issuer Distribution Point URL.
-Finally, values from the remoteHost section are copied in.
+from the issuerDn section are copied in. Finally, values from the remoteHost
+section are copied in.
 
 In this way, it is often unnecessary to supply any configuration at all, if
 the Issuing Distribution Point is supplied in the CRL. See below for defaults.
@@ -161,18 +161,28 @@ Whitespace around the commas is tolerated.
 
 Specify the filename to publish the CRL as, since crlpublish was probably
 invoked using a temporary file with a randomized name. If not specified,
-it will be parsed from the CRL if available.
+it will be parsed from the CRL if available.  If still not found, a
+runtime error will be generated.
 
 =head2 remotePath
 
 Specify the subdirectory to place the remoteFile in. Relative paths are
 relative to the remoteUser's home directory on the remoteHost. It must
 exist. If not specified, it will be parsed from the CRL if available.
+If still not found, a runtime error will be generated.
 
 =head2 remoteLocation
 
 Combines remotePath and remoteFile into a single directive. Kept for
 legacy compatibility; stored internally as remotePath and remoteFile.
+
+=head2 privateKeyFile
+
+Filename of a private key compatible with the publishMethod in use.
+
+=head2 privateKey
+
+Equivalent to privateKeyFile, kept for legacy compatibility.
 
 =head1 AUTHOR
 
