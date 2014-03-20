@@ -5,10 +5,10 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'	=> 'EJBCA::CrlPublish',
     'VERSION_FROM' => 'CrlPublish/Run.pm', # finds $VERSION
-    'LIBS'	=> [''],   # e.g., '-lm' 
-    'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
-    'INC'	=> '',     # e.g., '-I/usr/include/other' 
-    'OBJECT'    => '',
+#    'LIBS'	=> [''],   # e.g., '-lm' 
+#    'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
+#    'INC'	=> '',     # e.g., '-I/usr/include/other' 
+#    'OBJECT'    => '',
     'dist'      => {
         COMPRESS => 'gzip', SUFFIX => 'gz',
     },
@@ -16,4 +16,5 @@ WriteMakefile(
     'INSTALLSITESCRIPT' => '/usr/bin',
     'INSTALLVENDORSCRIPT' => '/usr/bin',
     'EXE_FILES'     => [ 'crlpublish' ],
+    'MAN1PODS'      => { 'pod/crlpublish' => 'blib/man1/crlpublish.1' },
 );

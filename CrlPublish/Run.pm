@@ -104,7 +104,7 @@ more target servers.
 
 $program references configuration files to determine where to send any given
 CRL, by what method to send it, and with what parameters. The configuration
-file format and location is detailed in "man 5 crlpublish".
+file format and location is detailed in "man crlpublish".
 
 $program is fully backwards compatible with the configuration files from
 Branko Majik's crlpublisher.sh script version 0.1, in situ and as-is.

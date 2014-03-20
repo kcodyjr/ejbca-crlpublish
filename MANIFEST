@@ -1,5 +1,6 @@
 Makefile.PL
 crlpublish
+pod/crlpublish
 CrlPublish.pm
 CrlPublish/Config.pm
 CrlPublish/CrlInfo.pm
