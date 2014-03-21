@@ -41,7 +41,7 @@ Calls the openssl binary and parses the output to get its job done.
 ###############################################################################
 # Library Dependencies
 
-our $VERSION = 0.4;
+our $VERSION = '0.5';
 
 
 ###############################################################################

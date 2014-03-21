@@ -55,7 +55,7 @@ use EJBCA::CrlPublish::CrlInfo;
 use EJBCA::CrlPublish::Method;
 use EJBCA::CrlPublish::Target;
 
-our $VERSION = '0.4';
+our $VERSION = '0.5';
 
 use base 'Exporter';
 our @EXPORT = qw( publishCrl processQueue );

@@ -41,7 +41,7 @@ All functions should be called as class methods.
 ###############################################################################
 # Library Dependencies
 
-our $VERSION = 0.4;
+our $VERSION = '0.5';
 
 
 ###############################################################################
@@ -229,6 +229,10 @@ sub parseFile {
 
 		elsif ( $var eq 'privateKey' ) {
 			$rv{$sec}->{privateKeyFile} = $val;
+		}
+
+		elsif ( $var eq 'publisher' ) {
+			$rv{$sec}->{publishMethod} = $val;
 		}
 
 		else {

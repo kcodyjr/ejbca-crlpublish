@@ -45,7 +45,7 @@ cannot be retrieved from the server.
 
 use base 'EJBCA::CrlPublish::Method';
 
-our $VERSION = '0.4.1';
+our $VERSION = '0.5';
 
 
 ###############################################################################
