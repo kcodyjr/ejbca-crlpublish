@@ -103,7 +103,8 @@ EEOF
 if ( @ARGV == 0 ) {
 
 	unless ( -t STDIN ) {
-		exit( EJBCA::CrlPublish::processQueue ? 0 : 1 );
+		my $rc = EJBCA::CrlPublish::processQueue;
+		exit( $rc ? 0 : 1 );
 	}
 
 	else {
@@ -116,7 +117,8 @@ if ( @ARGV == 0 ) {
 elsif ( @ARGV == 1 ) {
 
 	if ( -f $ARGV[0] ) {	# called with a crl
-		exit( EJBCA::CrlPublish::publishCrl( $ARGV[0] ) ? 0 : 1 );
+		my $rc = EJBCA::CrlPublish::publishCrl( $ARGV[0] );
+		exit( $rc ? 0 : 1 );
 	}
 
 	elsif ( $ARGV[0] eq '-v' ) {
@@ -130,7 +132,8 @@ elsif ( @ARGV == 1 ) {
 	}
 
 	elsif ( $ARGV[0] eq '-q' ) {
-		exit( EJBCA::CrlPublish::processQueue ? 0 : 1 );
+		my $rc = EJBCA::CrlPublish::processQueue;
+		exit( $rc ? 0 : 1 );
 	}
 
 	else {

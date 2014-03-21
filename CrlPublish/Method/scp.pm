@@ -45,7 +45,9 @@ cannot be retrieved from the server.
 
 use base 'EJBCA::CrlPublish::Method';
 
-our $VERSION = '0.5';
+use EJBCA::CrlPublish::Logging;
+
+our $VERSION = '0.6';
 
 
 ###############################################################################
@@ -72,7 +74,8 @@ sub publish {
 	my $args = $self->target->scpExtraArgs;
 
 	if ( $pkey ) {
-		$self->checkFileType( 'SSH private key', $pkey );
+		$self->checkFileType( 'SSH private key', $pkey )
+			or return undef;
 		push @args, '-i', $pkey;
 	}
 
@@ -91,11 +94,19 @@ sub publish {
 
 	my $target = $t_host . ':' . $t_temp;
 
-	system( 'scp', @args, $source, $target ) == 0
-		or die "Failed to scp: $?";
+	my @scpcall = ( 'scp', @args, $source, $target );
 
-	system( 'ssh', @args, $t_host, 'mv', $t_temp, $t_file ) == 0
-		or die "Failed to rename: $?";	
+	unless ( system( @scpcall ) == 0 ) {
+		msgError "Failed to scp: $?";
+		return undef;
+	}
+
+	my @smvcall = ( 'ssh', @args, $t_host, 'mv', $t_temp, $t_file );
+
+	unless ( system( @smvcall ) == 0 ) {
+		msgError "Failed to ssh mv: $?";	
+		return undef;
+	}
 
 	return 1;
 }

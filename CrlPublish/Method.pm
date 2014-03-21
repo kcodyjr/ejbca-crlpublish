@@ -42,8 +42,9 @@ This is invoked by EJBCA::CrlPublish to actually transfer a CRL.
 # Library dependencies
 
 use Carp;
+use EJBCA::CrlPublish::Logging;
 
-our $VERSION = '0.5';
+our $VERSION = '0.6';
 
 
 ###############################################################################
@@ -71,20 +72,30 @@ sub execute {
 		confess 'Expecting Target object, got ' . ref( $target );
 	}
 
-	my $meth = $target->publishMethod
-		or confess "Unable to determine publishing method";
+	my $meth = $target->publishMethod;
+
+	unless ( $meth ) {
+		msgError "Unable to determine publishing method.";
+		return undef;
+	}
 
 	my $oclass = __PACKAGE__ . '::' . $meth;
 	my $classp = __PACKAGE__ . '::' . $meth . '.pm';
 	$classp =~ s/::/\//g;
 
-	require $classp or croak "Publishing method $meth not found";
+	unless ( require $classp ) {
+		msgError "Publishing method $meth not found.";
+		return undef;
+	}
 
 	bless my $self = {}, $oclass;
 
 	$self->{target}  = $target;
 
-	return undef unless $self->validate;
+	unless ( $self->validate ) {
+		msgError "Publishing pre-validation failed.";
+		return undef;
+	}
 
 	return $self->publish;
 }
@@ -117,7 +128,8 @@ sub argMustExist {
 
 	while ( my $arg = shift ) {
 		next if $self->target->$arg;
-		croak "required argument $arg not present in target";
+		msgError "Required attribute '$arg' not present.";
+		return 0;
 	}
 
 	return 1;
@@ -134,14 +146,20 @@ Croaks if the file isn't present, plain, and readable.
 sub checkFileType {
 	my ( $self, $name, $path ) = @_;
 
-	die "$name file '$path' not found.\n"
-		unless -e $path;
+	unless ( -e $path ) {
+		msgError "$name file '$path' not found.";
+		return 0;
+	}
 
-	die "$name file '$path' not a file.\n"
-		unless -f $path;
+	unless ( -f $path ) {
+		msgError "$name file '$path' not a file.";
+		return 0;
+	}
 
-	die "$name file '$path' not readable.\n"
-		unless -r $path;
+	unless ( -r $path ) {
+		msgError "$name file '$path' not readable.";
+		return 0;
+	}
 
 	return 1;
 }

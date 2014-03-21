@@ -41,7 +41,9 @@ All functions should be called as class methods.
 ###############################################################################
 # Library Dependencies
 
-our $VERSION = '0.5';
+use EJBCA::CrlPublish::Logging;
+
+our $VERSION = '0.6';
 
 
 ###############################################################################
@@ -115,8 +117,10 @@ sub importAllFiles {
 
 	return 1 unless -d $path;
 
-	opendir $dh, $path
-		or die "opendir($path): $!\n";
+	unless ( opendir $dh, $path ) {
+		msgError "opendir($path): $!";
+		return undef;
+	}
 
 	while ( my $dirent = readdir $dh ) {
 		next if $dirent =~ /^\./;
@@ -134,11 +138,13 @@ sub importAllFiles {
 		}
 
 		elsif ( $ffmt eq 'new' ) {
-			$class->importNewFile( $fcfg );
+			$class->importNewFile( $fcfg )
+				or return undef;
 		}
 
 		else {
-			die "Unknown config file format";
+			msgError "Unknown config file format '$dirent'.";
+			return undef;
 		}
 
 	}
@@ -161,7 +167,8 @@ sub importOldFile {
 	}
 
 	else {
-		die "Cannot determine config section!\n";
+		msgError "No issuerDn found in an old style .conf file.";
+		return 0;
 	}
 
 	foreach my $name ( keys %$fcfg ) {
@@ -186,9 +193,12 @@ sub importNewFile {
 
 sub parseFile {
 	my ( $class, $file ) = @_;
+	my $fh;
 
-	open my $fh, '< ' . $file
-		or die "open($file): $!\n";
+	unless ( open $fh, '< ' . $file ) {
+		msgError "open($file): $!";
+		return undef;
+	}
 
 	my %rv;
 	my $sec = '_';

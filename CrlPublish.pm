@@ -41,10 +41,10 @@ Exports: &publishCrl &processQueue
 ###############################################################################
 # Global Configuration
 
-my $globalOldConfigDir = '/etc/crlpublisher';
-my $invokeOldConfigDir = $ENV{HOME} . '/.crlpublisher';
-my $globalNewConfigDir = '/etc/crlpublish';
-my $invokeNewConfigDir = $ENV{HOME} . '/.crlpublish';
+my $globalOldConfig = '/etc/crlpublisher';
+my $invokeOldConfig = $ENV{HOME} . '/.crlpublisher';
+my $globalNewConfig = '/etc/crlpublish';
+my $invokeNewConfig = $ENV{HOME} . '/.crlpublish';
 
 
 ###############################################################################
@@ -52,6 +52,7 @@ my $invokeNewConfigDir = $ENV{HOME} . '/.crlpublish';
 
 use EJBCA::CrlPublish::Config;
 use EJBCA::CrlPublish::CrlInfo;
+use EJBCA::CrlPublish::Logging;
 use EJBCA::CrlPublish::Method;
 use EJBCA::CrlPublish::Target;
 
@@ -65,12 +66,18 @@ our @EXPORT = qw( publishCrl processQueue );
 # Configuration Loader
 
 sub loadConfiguration() {
+	my $rc = 1;
 
-	EJBCA::CrlPublish::Config->importAllFiles( $globalNewConfigDir );
-	EJBCA::CrlPublish::Config->importAllFiles( $globalOldConfigDir );
-	EJBCA::CrlPublish::Config->importAllFiles( $invokeNewConfigDir );
-	EJBCA::CrlPublish::Config->importAllFiles( $invokeOldConfigDir );
+	$rc &&= EJBCA::CrlPublish::Config->importAllFiles( $globalNewConfig );
+	$rc &&= EJBCA::CrlPublish::Config->importAllFiles( $globalOldConfig );
+	$rc &&= EJBCA::CrlPublish::Config->importAllFiles( $invokeNewConfig );
+	$rc &&= EJBCA::CrlPublish::Config->importAllFiles( $invokeOldConfig );
 
+	unless ( $rc ) {
+		msgError "Configuration errors detected. Aborting.";
+	}
+
+	return $rc;
 }
 
 
@@ -82,12 +89,31 @@ sub _publishOneCrl($) {
 
 	my $crlInfo = EJBCA::CrlPublish::CrlInfo->new( $crlFile );
 
+	unless ( $crlInfo ) {
+		msgError "Unable to parse CRL. Aborting.";
+		return 0;
+	}
+
 	my @targets = EJBCA::CrlPublish::Target->find( $crlInfo );
+
+	unless ( scalar( @targets ) ) {
+		msgError "Could not find any publishing targets. Aborting.";
+		return 0;
+	}
 
 	my $rc = 1;
 	foreach my $target ( @targets ) {
+		msgDebug "Publishing to target ", $target->remoteHost;
 		# TODO: implement asynchronous queueing
 		$rc &&= EJBCA::CrlPublish::Method->execute( $target );
+	}
+
+	if ( $rc ) {
+		msgDebug "Publishing succeeded.";
+	}
+
+	else {
+		msgError "Publishing failed.";
 	}
 
 	return $rc;
@@ -113,7 +139,8 @@ and returns false if any single crlFile failed to publish or enqueue.
 
 sub publishCrl(@) {
 
-	loadConfiguration();
+	loadConfiguration()
+		or return 0;
 
 	my $rc = 1;
 	while ( my $crlFile = shift ) {
@@ -141,7 +168,8 @@ By default, the queue directory is in /var/spool/crlpublish.
 
 sub processQueue() {
 
-	loadConfiguration();
+	loadConfiguration()
+		or return 0;
 
 #	my $dir = $cfg->spooldirectory
 #		or die "Asynchronous publishing is not configured.\n";

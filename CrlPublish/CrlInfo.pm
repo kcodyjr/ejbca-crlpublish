@@ -41,7 +41,9 @@ Calls the openssl binary and parses the output to get its job done.
 ###############################################################################
 # Library Dependencies
 
-our $VERSION = '0.5';
+use EJBCA::CrlPublish::Logging;
+
+our $VERSION = '0.6';
 
 
 ###############################################################################
@@ -86,7 +88,7 @@ sub importIssuerDn {
 	$s = sprintf $f, 'PEM', $crlFile;
 	return 1 if $self->tryImportIssuerDn( 'PEM', $s );
 
-	warn "Invalid CRL file '$crlFile'\n";
+	msgError "Invalid CRL file '$crlFile'\n";
 
 	return 0;
 }
@@ -116,7 +118,11 @@ sub importIssuingUrl {
 		. ' -noout -text'
 		. ' 2> /dev/null';
 
-	open my $fh, "$s |" or die $!;
+	my $fh;
+	unless ( open $fh, "$s |" ) {
+		msgError "open(openssl|): $!";
+		return undef;
+	}
 
 	my $keepgoing = 1;
 	while ( $keepgoing ) { 
@@ -138,7 +144,7 @@ sub importIssuingUrl {
 	$txt1 =~ s/^\s+//;
 	$txt1 =~ s/\s+$//;
 	unless ( $txt1 =~ /^Full Name:$/ ) {
-		warn "CRL parse error: expected 'Full Name', got '$txt1'\n";
+		msgError "CRL parse error: expected 'Full Name', got '$txt1'\n";
 		return;
 	}
 
@@ -148,7 +154,7 @@ sub importIssuingUrl {
 	$txt2 =~ s/^\s+//;
 	$txt2 =~ s/\s+$//;
 	unless ( $txt2 =~ /^URI:/ ) {
-		warn "CRL parse error: expected 'URI', got '$txt2'\n";
+		msgError "CRL parse error: expected 'URI', got '$txt2'\n";
 		return;
 	}
 
