@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     'NAME'			=> 'EJBCA::CrlPublish',
-    'VERSION_FROM'		=> 'CrlPublish/Run.pm', # finds $VERSION
+    'VERSION_FROM'		=> 'CrlPublish.pm',	# finds $VERSION
     'dist'			=> { COMPRESS => 'gzip', SUFFIX => 'gz' },
     'INSTALLSCRIPT'		=> '/usr/bin',
     'INSTALLSITESCRIPT'		=> '/usr/bin',
