@@ -198,6 +198,9 @@ at config-read time and stored internally as remotePath and remoteFile.
 crlpublish requires a CA that publishes CRLs by calling a script, such
 as EJBCA. Also, you will need a reasonably recent copy of Perl.
 
+The openssl binary must be present on the sending host, and should
+also be present on the target hosts.
+
 The scp publishing method requires ssh and scp to be installed on the
 local (CA) and remote (CRL distributing) hosts.
 
