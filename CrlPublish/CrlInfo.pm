@@ -44,7 +44,7 @@ Calls the openssl binary and parses the output to get its job done.
 use EJBCA::CrlPublish::CrlInfo::Parse;
 use EJBCA::CrlPublish::Logging;
 
-our $VERSION = '0.6';
+our $VERSION = '0.60';
 
 
 ###############################################################################

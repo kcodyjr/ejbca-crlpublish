@@ -47,7 +47,7 @@ use base 'EJBCA::CrlPublish::Method';
 
 use EJBCA::CrlPublish::Logging;
 
-our $VERSION = '0.6';
+our $VERSION = '0.60';
 
 
 ###############################################################################

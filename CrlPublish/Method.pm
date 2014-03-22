@@ -44,7 +44,7 @@ This is invoked by EJBCA::CrlPublish to actually transfer a CRL.
 use Carp;
 use EJBCA::CrlPublish::Logging;
 
-our $VERSION = '0.6';
+our $VERSION = '0.60';
 
 
 ###############################################################################

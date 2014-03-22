@@ -41,7 +41,7 @@ Parses the openssl command line tool's output to glean details about the CRL.
 
 use EJBCA::CrlPublish::Logging;
 
-our $VERSION = '0.6';
+our $VERSION = '0.60';
 
 
 ###############################################################################

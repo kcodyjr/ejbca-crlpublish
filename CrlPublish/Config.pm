@@ -43,7 +43,7 @@ All functions should be called as class methods.
 
 use EJBCA::CrlPublish::Logging;
 
-our $VERSION = '0.6';
+our $VERSION = '0.60';
 
 
 ###############################################################################

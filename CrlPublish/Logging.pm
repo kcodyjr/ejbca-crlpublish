@@ -44,7 +44,7 @@ Exports &msgDebug &msgError
 use base 'Exporter';
 
 our @EXPORT  = qw( msgDebug msgError );
-our $VERSION = '0.6';
+our $VERSION = '0.60';
 our $DODEBUG = 0;
 
 
