@@ -4,6 +4,7 @@ pod/crlpublish
 CrlPublish.pm
 CrlPublish/Config.pm
 CrlPublish/CrlInfo.pm
+CrlPublish/CrlInfo/Parse.pm
 CrlPublish/Logging.pm
 CrlPublish/Method.pm
 CrlPublish/Method/scp.pm
